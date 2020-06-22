@@ -7,17 +7,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class AdsController {
-    @GetMapping("/ads/{id}")
+public class PostController {
+    @GetMapping("/posts")
     @ResponseBody
-    public String showAd(@PathVariable long id){
-        return "show ad id: " + id;
+    public String postIndex() {
+        return "Posts index page";
     }
-
-    @PostMapping("/ads/create")
+    @GetMapping("/posts/{id}")
+    @ResponseBody
+    public String getPostId(@PathVariable long id) {
+        return "Viewing Post Id #: " + id;
+    }
+    @GetMapping("/posts/create")
+    @ResponseBody
+    public String viewCreateForm() {
+        return "viewing create post form";
+    }
+    @PostMapping("/posts/create")
     @ResponseBody
     public String insert(){
         return "posted";
     }
-
 }
