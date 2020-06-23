@@ -1,3 +1,4 @@
+
 package com.codeup.blog;
 
 import org.springframework.boot.SpringApplication;
