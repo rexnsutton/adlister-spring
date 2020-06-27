@@ -1,10 +1,19 @@
 package com.codeup.blog.models;
 
-public class Ad {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "posts")
+public class Post {
+    @Column(nullable = false, length = 100)
     private String title;
+
+    @Column(nullable = false)
     private String description;
 
-    public Ad(String title, String description) {
+    public Post(String title, String description) {
         this.title = title;
         this.description = description;
     }

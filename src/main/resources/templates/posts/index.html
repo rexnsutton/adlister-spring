@@ -8,12 +8,12 @@
 <body>
 <nav th:replace="fragments/navbar :: navbar" />
 <div class="container">
-    <div th:if="${noAdsFound}">
+    <div th:if="${noPostsFound}">
         No ads were found.
     </div>
-    <div th:each="ad : ${ads}">
-        <h3 th:text="${ad.title}">Title</h3>
-        <div th:text="${ad.description}">Description</div>
+    <div th:each="post : ${posts}">
+        <h3 th:text="${post.title}">Title</h3>
+        <div th:text="${post.description}">Description</div>
     </div>
 </div>
 </body>
