@@ -15,17 +15,30 @@ public class Post {
     @Column(nullable = false)
     private String description;
 
+    @OneToOne
+    private User owner;
     public Post() {}
 
 
-    public Post(String title, String description) {
+    public Post(String title, String description, User user) {
         this.title = title;
         this.description = description;
+        this.owner = user;
     }
-    public Post(long id, String title, String description) {
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public Post(long id, String title, String description, User user) {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.owner = user;
     }
     public String getDescription() {
         return description;

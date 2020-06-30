@@ -1,7 +1,9 @@
 package com.codeup.blog.controllers;
 
 import com.codeup.blog.daos.PostRepository;
+import com.codeup.blog.daos.UsersRepository;
 import com.codeup.blog.models.Post;
+import com.codeup.blog.models.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,48 +14,64 @@ import java.util.List;
 @Controller
 public class PostsController {
     private PostRepository postsDao;
-    public PostsController(PostRepository postRepository){
+    private UsersRepository usersDao;
+    public PostsController(PostRepository postRepository, UsersRepository usersRepository){
         postsDao = postRepository;
+        usersDao = usersRepository;
     }
+
 
     @GetMapping("/posts")
 //    @RequestMapping(value = "/ads", method = RequestMethod.GET)
     public String index(Model model){
-        ArrayList<Post> PostsList = new ArrayList<>();
-//        PostsList.add(new Post("PS1", "Used"));
-        PostsList.add(new Post("PS2", "Used"));
-//        PostsList.add(new Post("PS4", "Used"));
-//        PostsList.add(new Post("SNES", "Used"));
-        model.addAttribute("noPostsFound", PostsList.size() == 0);
-        model.addAttribute("posts", PostsList);
-        return "posts/index";
-    }
+//            Post firstPost = postsDao.findFirstByTitle("PS1");
+//            System.out.println("firstPost.getId() = " + firstPost.getId());
+            List<Post> postsList = postsDao.findAll();
+            model.addAttribute("noPostsFound", postsList.size() == 0);
+            model.addAttribute("posts", postsList);
+            return "/posts/index";
+        }
 
     @GetMapping("/posts/{id}")
-    @ResponseBody
-    public String show(@PathVariable long id , Model model){
-        model.addAttribute("PostId", id);
-        model.addAttribute("post", new Post("PS1", "cool bro"));
+    public String show(@PathVariable long id, Model model){
+        Post post = postsDao.getOne(id);
+        model.addAttribute("postId", id);
+        model.addAttribute("post", post);
         return "/posts/show";
     }
 
+    @GetMapping("/posts/create")
+    public String viewCreateForm(Model model) {
+        model.addAttribute("post", new Post());
+        return "posts/create";
+    }
+
+
     @PostMapping("/posts/create")
-    @ResponseBody
-    public String save(){
+    public String savePost(@ModelAttribute Post newPost) {
+        User currentUser = usersDao.getOne(1L);
+        newPost.setOwner(currentUser);
+        Post savedPost = postsDao.save(newPost);
+        return "redirect:/posts/" + savedPost.getId();
+    }
 
-            Post newAd = new Post("XBOX X","brand new");
-            postsDao.save(newAd);
-            return "Post created";
-        }
-
-    @PutMapping("/posts/{id}/edit")
+    @GetMapping("/posts/{id}/edit")
+    public String showEditForm(Model model, @PathVariable long id){
+        // find an ad
+        Post postToEdit = postsDao.getOne(id);
+        model.addAttribute("post", postToEdit);
+        return "/posts/edit";
+    }
+    @PostMapping("/posts/{id}/edit")
     @ResponseBody
-    public String update(@PathVariable long id){
+    public String update(@PathVariable long id,
+                         @RequestParam(name = "title") String title,
+                         @RequestParam(name = "description") String desc){
         // find an ad
         Post foundPost = postsDao.getOne(id); // select * from ads where id = ?
         // edit the ad
-        foundPost.setTitle("XBOX Series X");
-        foundPost.setDescription("holiday");
+        foundPost.setTitle(title);
+        foundPost.setDescription(desc);
         // save the changes
         postsDao.save(foundPost); // update ads set title = ? where id = ?
         return "Post updated";
@@ -63,7 +81,7 @@ public class PostsController {
     @ResponseBody
     public String destroy(@PathVariable long id){
         postsDao.deleteById(id);
-        return "posts/show";
+        return "posts deleted ";
     }
 
 }
