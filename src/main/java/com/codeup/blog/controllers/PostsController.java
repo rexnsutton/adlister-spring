@@ -1,5 +1,6 @@
 package com.codeup.blog.controllers;
 
+import com.codeup.blog.daos.PostRepository;
 import com.codeup.blog.models.Post;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,15 +11,19 @@ import java.util.List;
 
 @Controller
 public class PostsController {
+    private PostRepository postsDao;
+    public PostsController(PostRepository postRepository){
+        postsDao = postRepository;
+    }
 
     @GetMapping("/posts")
 //    @RequestMapping(value = "/ads", method = RequestMethod.GET)
     public String index(Model model){
         ArrayList<Post> PostsList = new ArrayList<>();
-        PostsList.add(new Post("PS1", "Used"));
+//        PostsList.add(new Post("PS1", "Used"));
         PostsList.add(new Post("PS2", "Used"));
-        PostsList.add(new Post("PS4", "Used"));
-        PostsList.add(new Post("SNES", "Used"));
+//        PostsList.add(new Post("PS4", "Used"));
+//        PostsList.add(new Post("SNES", "Used"));
         model.addAttribute("noPostsFound", PostsList.size() == 0);
         model.addAttribute("posts", PostsList);
         return "posts/index";
@@ -32,17 +37,33 @@ public class PostsController {
         return "/posts/show";
     }
 
-    @GetMapping("/posts/create")
-    @ResponseBody
-    public String showForm(){
-        return "view the form for creating an ad";
-    }
-
     @PostMapping("/posts/create")
     @ResponseBody
     public String save(){
-        return "create a new ad";
+
+            Post newAd = new Post("XBOX X","brand new");
+            postsDao.save(newAd);
+            return "Post created";
+        }
+
+    @PutMapping("/posts/{id}/edit")
+    @ResponseBody
+    public String update(@PathVariable long id){
+        // find an ad
+        Post foundPost = postsDao.getOne(id); // select * from ads where id = ?
+        // edit the ad
+        foundPost.setTitle("XBOX Series X");
+        foundPost.setDescription("holiday");
+        // save the changes
+        postsDao.save(foundPost); // update ads set title = ? where id = ?
+        return "Post updated";
     }
 
+    @PostMapping("/posts/{id}/delete")
+    @ResponseBody
+    public String destroy(@PathVariable long id){
+        postsDao.deleteById(id);
+        return "posts/show";
+    }
 
 }

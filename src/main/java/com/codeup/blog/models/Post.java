@@ -1,23 +1,32 @@
 package com.codeup.blog.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "posts")
+@Table(name = "post")
 public class Post {
-    @Column(nullable = false, length = 100)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(nullable = false, length = 200)
     private String title;
 
     @Column(nullable = false)
     private String description;
 
+    public Post() {}
+
+
     public Post(String title, String description) {
         this.title = title;
         this.description = description;
     }
-
+    public Post(long id, String title, String description) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+    }
     public String getDescription() {
         return description;
     }
@@ -32,5 +41,13 @@ public class Post {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }
