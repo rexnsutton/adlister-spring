@@ -4,6 +4,7 @@ import com.codeup.blog.daos.PostRepository;
 import com.codeup.blog.daos.UsersRepository;
 import com.codeup.blog.models.Post;
 import com.codeup.blog.models.User;
+import com.codeup.blog.services.EmailService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,11 @@ import java.util.List;
 public class PostsController {
     private PostRepository postsDao;
     private UsersRepository usersDao;
-    public PostsController(PostRepository postRepository, UsersRepository usersRepository){
-        postsDao = postRepository;
-        usersDao = usersRepository;
+    private EmailService emailService;
+    public PostsController(PostRepository postRepository, UsersRepository usersRepository, EmailService emailService){
+        this.postsDao = postRepository;
+        this.usersDao = usersRepository;
+        this.emailService = emailService;
     }
 
 
@@ -52,6 +55,7 @@ public class PostsController {
         User currentUser = usersDao.getOne(1L);
         newPost.setOwner(currentUser);
         Post savedPost = postsDao.save(newPost);
+        emailService.prepareAndSend(savedPost, "created ad", " your ad has been created");
         return "redirect:/posts/" + savedPost.getId();
     }
 
