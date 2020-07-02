@@ -16,7 +16,9 @@
             <li><a href="/register" style="color: white">Register</a></li>
             <li><a href="/profile" style="color: white">Profile</a></li>
             <li><a href="/login" style="color: white">Login</a></li>
-            <li><a href="/logout" style="color: white">Logout</a></li>
+           <li> <form th:action="@{/logout}" th:method="post">
+                <button class="btn-link btn" style="margin-top: 8px">Logout</button>
+            </form></li>
             <li>
           <div class="d-flex align-items-center">
                 <form action="/searchResult" method="GET">
