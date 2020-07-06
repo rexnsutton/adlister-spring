@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head('Adlister | View Ad')">
+<head th:replace="fragments/head :: head('Bloglister | View post')">
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <nav th:replace="fragments/navbar :: navbar" />
 <div class="container">
-    <form action="/posts/create" th:method="post" th:object="${post}">
+    <form th:action="@{/posts/create}" th:method="post" th:object="${post}">
         Title:
         <input th:field="*{title}" />
         <br />
